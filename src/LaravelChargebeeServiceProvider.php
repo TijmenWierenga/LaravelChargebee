@@ -23,6 +23,8 @@ class LaravelChargebeeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->publishes([
+            __DIR__.'/config/chargebee.php' => config_path('chargebee.php'),
+        ]);
     }
 }
