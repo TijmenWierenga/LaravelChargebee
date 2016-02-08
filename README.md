@@ -14,7 +14,7 @@ A Laravel package which provides an easy way to handle billing and subscriptions
 Via Composer
 
 ``` bash
-$ composer require TijmenWierenga/LaravelChargebee
+$ composer require tijmen-wierenga/laravel-chargebee
 ```
 
 ## Usage
