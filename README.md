@@ -53,17 +53,17 @@ If you discover any security related issues, please email tijmen@floown.com inst
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/TijmenWierenga/LaravelChargebee.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/tijmen-wierenga/laravel-chargebee.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/TijmenWierenga/LaravelChargebee/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/TijmenWierenga/LaravelChargebee.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/TijmenWierenga/LaravelChargebee.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/TijmenWierenga/LaravelChargebee.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/tijmen-wierenga/laravel-chargebee/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/tijmen-wierenga/laravel-chargebee.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/tijmen-wierenga/laravel-chargebee.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/tijmen-wierenga/laravel-chargebee.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/TijmenWierenga/LaravelChargebee
-[link-travis]: https://travis-ci.org/TijmenWierenga/LaravelChargebee
-[link-scrutinizer]: https://scrutinizer-ci.com/g/TijmenWierenga/LaravelChargebee/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/TijmenWierenga/LaravelChargebee
-[link-downloads]: https://packagist.org/packages/TijmenWierenga/LaravelChargebee
+[link-packagist]: https://packagist.org/packages/tijmen-wierenga/laravel-chargebee
+[link-travis]: https://travis-ci.org/tijmen-wierenga/laravel-chargebee
+[link-scrutinizer]: https://scrutinizer-ci.com/g/tijmen-wierenga/laravel-chargebee/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/tijmen-wierenga/laravel-chargebee
+[link-downloads]: https://packagist.org/packages/tijmen-wierenga/laravel-chargebee
 [link-author]: https://github.com/TijmenWierenga
 [link-contributors]: ../../contributors
