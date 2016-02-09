@@ -13,7 +13,10 @@ class LaravelChargebeeServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Copies the config file to project config directory on: php artisan vendor:publish
+        $this->publishes([
+            __DIR__.'/config/chargebee.php' => config_path('chargebee.php'),
+        ]);
     }
 
     /**
@@ -23,9 +26,6 @@ class LaravelChargebeeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Copies the config file to project config directory on: php artisan vendor:publish
-        $this->publishes([
-            __DIR__.'/config/chargebee.php' => config_path('chargebee.php'),
-        ]);
+
     }
 }
