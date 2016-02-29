@@ -4,7 +4,7 @@ namespace TijmenWierenga\LaravelChargebee;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelChargebeeServiceProvider extends ServiceProvider
+class ChargebeeServiceProvider extends ServiceProvider
 {
     /**
      * Perform post-registration booting of services.
