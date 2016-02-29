@@ -16,7 +16,7 @@ class CreateAddonsTable extends Migration
             $table->increments('id');
             $table->integer('subscription_id')->index()->unsigned();
             $table->string('name');
-            $table->string('chargebee_addon_id');
+            $table->string('addon_id');
             $table->integer('quantity')->default(0);
             $table->timestamps();
         });

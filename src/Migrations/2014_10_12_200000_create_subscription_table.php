@@ -16,7 +16,7 @@ class CreateSubscriptionsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->index()->unsigned();
             $table->string('name');
-            $table->string('chargebee_plan_id');
+            $table->string('plan_id');
             $table->integer('quantity')->default(0);
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
