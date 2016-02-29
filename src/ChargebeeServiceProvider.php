@@ -31,6 +31,6 @@ class ChargebeeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        //
     }
 }
