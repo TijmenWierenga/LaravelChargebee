@@ -40,7 +40,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
     /**
     * @test
     */
-    public function it_returns_the_subscriber()
+    public function it_creates_a_subscription()
     {
     	$user = User::create([
             'email'     => 'tijmen@floown.com',
@@ -48,7 +48,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
         ]);
 
         $subscriber = $user->subscribe('test-plan');
-        
+
         $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscriber::class, $subscriber);
     }
 
