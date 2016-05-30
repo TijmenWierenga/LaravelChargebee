@@ -40,7 +40,7 @@
         }
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "../../bin/phpunit --colors"
     },
     "extra": {
         "branch-alias": {
