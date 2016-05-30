@@ -40,7 +40,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
     /**
     * @test
     */
-    public function it_creates_a_subscription()
+    public function it_returns_the_subscription_creation_class()
     {
     	$user = User::create([
             'email'     => 'tijmen@floown.com',
@@ -50,6 +50,36 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $subscriber = $user->subscribe('test-plan');
 
         $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscriber::class, $subscriber);
+    }
+
+    /**
+    * @test
+    */
+    public function it_throws_an_exception_when_no_plan_is_provided_when_creating_a_new_subscription()
+    {
+        $user = User::create([
+            'email'     => 'tijmen@floown.com',
+            'name'      => 'Tijmen Wierenga'
+        ]);
+
+        $this->setExpectedException(TijmenWierenga\LaravelChargebee\Exceptions\MissingPlanException::class);
+
+        $user->subscribe()->create();
+    }
+
+    /**
+     * @test
+     */
+    public function it_registers_a_new_subscription_within_chargebee()
+    {
+        $user = User::create([
+            'email'     => 'tijmen@floown.com',
+            'name'      => 'Tijmen Wierenga'
+        ]);
+
+        $result = $user->subscribe('cbdemo_free')->create();
+
+        dump($result);
     }
 
     /**
