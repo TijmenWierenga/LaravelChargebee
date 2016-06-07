@@ -16,4 +16,12 @@ trait Billable
     {
         return new Subscriber($this, $plan);
     }
+
+    /**
+     * @return mixed
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 }

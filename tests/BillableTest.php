@@ -27,7 +27,15 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $this->schema()->create('users', function($table) {
             $table->increments('id');
             $table->string('email');
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->timestamps();
+        });
+
+        $this->schema()->create('subscriptions', function($table) {
+            $table->increments('id');
+            $table->string('plan_id');
+            $table->string('user_id');
             $table->timestamps();
         });
     }
@@ -42,9 +50,10 @@ class BillableTest extends PHPUnit_Framework_TestCase
     */
     public function it_returns_the_subscription_creation_class()
     {
-    	$user = User::create([
-            'email'     => 'tijmen@floown.com',
-            'name'      => 'Tijmen Wierenga'
+        $user = User::create([
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
         ]);
 
         $subscriber = $user->subscribe('test-plan');
@@ -58,8 +67,9 @@ class BillableTest extends PHPUnit_Framework_TestCase
     public function it_throws_an_exception_when_no_plan_is_provided_when_creating_a_new_subscription()
     {
         $user = User::create([
-            'email'     => 'tijmen@floown.com',
-            'name'      => 'Tijmen Wierenga'
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
         ]);
 
         $this->setExpectedException(TijmenWierenga\LaravelChargebee\Exceptions\MissingPlanException::class);
@@ -73,12 +83,13 @@ class BillableTest extends PHPUnit_Framework_TestCase
     public function it_registers_a_new_subscription_within_chargebee()
     {
         $user = User::create([
-            'email'     => 'tijmen@floown.com',
-            'name'      => 'Tijmen Wierenga'
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
         ]);
 
         $result = $user->subscribe('cbdemo_free')->create();
-
+        //TODO: Finish test
         dump($result);
     }
 

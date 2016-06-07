@@ -48,15 +48,22 @@ class Subscriber
     }
 
     /**
-     * Create a new Chargebee subscription
-     *
+     * @return array
      * @throws MissingPlanException
      */
     public function create()
     {
         if (! $this->plan) throw new MissingPlanException('No plan was set to assign to the customer.');
 
-        // TODO: Implement method
+        $subscription = $this->buildSubscription();
+
+        $result = ChargeBee_Subscription::create($subscription);
+
+        $subscription = $this->model->subscriptions()->create([
+            'plan_id' => $result->subscription()->planId
+        ]);
+
+        return $subscription;
     }
 
     /**
@@ -89,12 +96,40 @@ class Subscriber
         foreach ($addOns as $addOn)
         {
             // TODO: Check if parameters are valid and catch exception.
-            $this->$addOns[] = [
+            $this->addOns[] = [
                 'id'        => $addOn['id'],
                 'quantity'  => $addOn['quantity']
             ];
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function buildSubscription()
+    {
+        // TODO: Create a subscription builder to clean up this class.
+        $subscription = [];
+        $subscription['planId'] = $this->plan;
+        $subscription['customer'] = [
+            'firstName' => $this->model->first_name,
+            'lastName'  => $this->model->last_name,
+            'email'     => $this->model->email
+        ];
+        $subscription['addOns'] = $this->buildAddOns();
+
+        return $subscription;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function buildAddOns()
+    {
+        if (empty($this->addOns)) return null;
+
+        return $this->addOns;
     }
 }
