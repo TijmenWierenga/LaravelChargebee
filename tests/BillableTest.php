@@ -36,6 +36,9 @@ class BillableTest extends PHPUnit_Framework_TestCase
             $table->increments('id');
             $table->string('plan_id');
             $table->string('user_id');
+            $table->integer('quantity');
+            $table->timestamp('ends_at')->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
             $table->timestamps();
         });
     }
@@ -88,9 +91,9 @@ class BillableTest extends PHPUnit_Framework_TestCase
             'last_name'     => 'Wierenga'
         ]);
 
-        $result = $user->subscribe('cbdemo_free')->create();
-        //TODO: Finish test
-        dump($result);
+        $subscription = $user->subscribe('cbdemo_free')->create();
+
+        $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
     }
 
     /**

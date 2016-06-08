@@ -60,7 +60,10 @@ class Subscriber
         $result = ChargeBee_Subscription::create($subscription);
 
         $subscription = $this->model->subscriptions()->create([
-            'plan_id' => $result->subscription()->planId
+            'plan_id'       => $result->subscription()->planId,
+            'ends_at'       => $result->subscription()->currentTermEnd,
+            'trial_ends_at' => $result->subscription()->trialEnd,
+            'quantity'      => $result->subscription()->planQuantity
         ]);
 
         return $subscription;
@@ -110,7 +113,6 @@ class Subscriber
      */
     public function buildSubscription()
     {
-        // TODO: Create a subscription builder to clean up this class.
         $subscription = [];
         $subscription['planId'] = $this->plan;
         $subscription['customer'] = [
