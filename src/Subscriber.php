@@ -48,14 +48,15 @@ class Subscriber
     }
 
     /**
+     * @param null $cardToken
      * @return array
      * @throws MissingPlanException
      */
-    public function create()
+    public function create($cardToken = null)
     {
         if (! $this->plan) throw new MissingPlanException('No plan was set to assign to the customer.');
 
-        $subscription = $this->buildSubscription();
+        $subscription = $this->buildSubscription($cardToken);
 
         $result = ChargeBee_Subscription::create($subscription);
 
@@ -111,7 +112,7 @@ class Subscriber
     /**
      * @return array
      */
-    public function buildSubscription()
+    public function buildSubscription($cardToken)
     {
         $subscription = [];
         $subscription['planId'] = $this->plan;
@@ -121,6 +122,11 @@ class Subscriber
             'email'     => $this->model->email
         ];
         $subscription['addOns'] = $this->buildAddOns();
+
+        if ($cardToken)
+        {
+            $subscription['card']['tmpToken'] = $cardToken;
+        }
 
         return $subscription;
     }

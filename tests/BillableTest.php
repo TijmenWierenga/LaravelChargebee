@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Stripe\Token;
 
 class BillableTest extends PHPUnit_Framework_TestCase
 {
@@ -83,7 +84,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_registers_a_new_subscription_within_chargebee()
+    public function it_registers_a_subscription_within_chargebee()
     {
         $user = User::create([
             'email'         => 'tijmen@floown.com',
@@ -91,9 +92,23 @@ class BillableTest extends PHPUnit_Framework_TestCase
             'last_name'     => 'Wierenga'
         ]);
 
-        $subscription = $user->subscribe('cbdemo_free')->create();
+        $cardToken = $this->getTestToken();
+
+        $subscription = $user->subscribe('cbdemo_free')->create($cardToken);
 
         $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
+    }
+
+    protected function getTestToken()
+    {
+        return Token::create([
+            'card' => [
+                'number' => '4242424242424242',
+                'exp_month' => 5,
+                'exp_year' => 2020,
+                'cvc' => '123',
+            ],
+        ], ['api_key' => getenv('STRIPE_SECRET')])->id;
     }
 
     /**
