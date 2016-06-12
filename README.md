@@ -21,10 +21,42 @@ Via Composer
 $ composer require tijmen-wierenga/laravel-chargebee
 ```
 
-## Usage
+Next, register the service provider in `config/app.php`:
 
 ``` php
-$awesome = 'Code';
+['providers'] => [
+    TijmenWierenga\LaravelChargebee\ChargebeeServiceProvider::class
+]
+```
+
+We also need database tables in order to store subscriptions and add-ons. Copy the migrations to your migrations folder by running the following command in your terminal:
+
+``` shell
+php artisan vendor:publish
+```
+
+Then run the database migrations by entering the following command:
+
+``` shell
+php artisan migrate
+```
+
+There are also a few environment variables that need to be added to the `.env`-file:
+
+```
+CHARGEBEE_SITE=your-chargebee-site
+CHARGEBEE_KEY=your-chargebee-token
+CHARGEBEE_MODEL=App\User
+STRIPE_SECRET=your-stripe-secret-key
+CHARGEBEE_GATEWAY=stripe
+```
+
+## Usage
+
+### Creating a new subscription:
+
+``` php
+$user->subscribe($plan)->create($creditcardToken);
 ```
 
 ## Change log
