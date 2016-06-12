@@ -40,7 +40,7 @@ class Subscriber
     public function __construct(Model $model = null, $plan = null)
     {
         // Set up Chargebee environment keys
-        ChargeBee_Environment::configure(env('CHARGEBEE_SITE'), env('CHARGEBEE_KEY'));
+        ChargeBee_Environment::configure(getenv('CHARGEBEE_SITE'), getenv('CHARGEBEE_KEY'));
 
         // You can set a plan on the constructor, but it's not required
         $this->plan = $plan;
@@ -130,7 +130,7 @@ class Subscriber
 
         if ($cardToken)
         {
-            $subscription['card']['gateway'] = env('CHARGEBEE_GATEWAY');
+            $subscription['card']['gateway'] = getenv('CHARGEBEE_GATEWAY');
             $subscription['card']['tmpToken'] = $cardToken;
         }
 
