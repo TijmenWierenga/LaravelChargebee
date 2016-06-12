@@ -35,9 +35,11 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         $this->schema()->create('subscriptions', function($table) {
             $table->increments('id');
+            $table->string('subscription_id');
             $table->string('plan_id');
             $table->string('user_id');
-            $table->integer('quantity');
+            $table->integer('quantity')->default(1);
+            $table->integer('last_four')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamps();
@@ -84,7 +86,30 @@ class BillableTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_registers_a_subscription_within_chargebee()
+    public function it_registers_a_free_subscription_without_creditcard()
+    {
+        $user = User::create([
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
+        ]);
+
+        $subscription = $user->subscribe('cbdemo_free')->create();
+
+        // Test if subscription is created in database
+        $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
+        // Test if user has a related subscription
+        $this->assertCount(1, $user->subscriptions);
+        // Test if subscription has an subscription identifier from Chargebee
+        $this->assertNotNull($user->subscriptions->first()->subscription_id);
+        // Test if credit card number is null
+        $this->assertNull($user->subscriptions->first()->last_four);
+    }
+
+    /**
+    * @test
+    */
+    public function it_registers_a_paid_subscription_within_chargebee()
     {
         $user = User::create([
             'email'         => 'tijmen@floown.com',
@@ -96,7 +121,14 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         $subscription = $user->subscribe('cbdemo_free')->create($cardToken);
 
+        // Test if subscription is created in database
         $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
+        // Test if user has a related subscription
+        $this->assertCount(1, $user->subscriptions);
+        // Test if subscription has an subscription identifier from Chargebee
+        $this->assertNotNull($user->subscriptions->first()->subscription_id);
+        // Test if credit card number is null
+        $this->assertNotNull($user->subscriptions->first()->last_four);
     }
 
     protected function getTestToken()

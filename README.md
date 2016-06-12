@@ -61,7 +61,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-downloads]: https://img.shields.io/packagist/dt/tijmen-wierenga/laravel-chargebee.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/tijmen-wierenga/laravel-chargebee
-[link-travis]: https://travis-ci.org/tijmen-wierenga/laravel-chargebee
+[link-travis]: https://travis-ci.org/TijmenWierenga/LaravelChargebee
 [link-scrutinizer]: https://scrutinizer-ci.com/g/tijmen-wierenga/laravel-chargebee/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/tijmen-wierenga/laravel-chargebee
 [link-downloads]: https://packagist.org/packages/tijmen-wierenga/laravel-chargebee

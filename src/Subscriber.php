@@ -59,12 +59,16 @@ class Subscriber
         $subscription = $this->buildSubscription($cardToken);
 
         $result = ChargeBee_Subscription::create($subscription);
+        $subscription = $result->subscription();
+        $card = $result->card();
 
         $subscription = $this->model->subscriptions()->create([
-            'plan_id'       => $result->subscription()->planId,
-            'ends_at'       => $result->subscription()->currentTermEnd,
-            'trial_ends_at' => $result->subscription()->trialEnd,
-            'quantity'      => $result->subscription()->planQuantity
+            'subscription_id'   => $subscription->id,
+            'plan_id'           => $subscription->planId,
+            'ends_at'           => $subscription->currentTermEnd,
+            'trial_ends_at'     => $subscription->trialEnd,
+            'quantity'          => $subscription->planQuantity,
+            'last_four'         => $card->last4
         ]);
 
         return $subscription;
@@ -110,6 +114,7 @@ class Subscriber
     }
 
     /**
+     * @param $cardToken
      * @return array
      */
     public function buildSubscription($cardToken)
@@ -125,6 +130,7 @@ class Subscriber
 
         if ($cardToken)
         {
+            $subscription['card']['gateway'] = env('CHARGEBEE_GATEWAY');
             $subscription['card']['tmpToken'] = $cardToken;
         }
 
