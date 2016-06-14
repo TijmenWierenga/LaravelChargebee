@@ -8,6 +8,11 @@ php:
 
 sudo: false
 
+## Cache composer bits
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 install: travis_retry composer update --no-interaction --prefer-source
 
 script: vendor/bin/phpunit --verbose

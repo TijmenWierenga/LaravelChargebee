@@ -55,9 +55,28 @@ CHARGEBEE_GATEWAY=stripe
 
 ### Creating a new subscription:
 
+Create a new subscription by providing the plan ID to the subscription method and by adding the credit card token to the create method:
+
 ``` php
-$user->subscribe($plan)->create($creditcardToken);
+$user->subscription($plan)->create($creditcardToken);
 ```
+
+You can also add add-ons to a subscription:
+
+``` php
+$user->subscription($plan)
+    ->withAddon($addon)
+    ->create($creditcardToken)
+```
+
+Or redeem a coupon:
+
+``` php
+$user->subscription($plan)
+    ->coupon($coupon)
+    ->create($creditcardToken)
+```
+
 
 ## Change log
 
