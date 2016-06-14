@@ -68,7 +68,7 @@ class Subscriber
             'ends_at'           => $subscription->currentTermEnd,
             'trial_ends_at'     => $subscription->trialEnd,
             'quantity'          => $subscription->planQuantity,
-            'last_four'         => ($cardToken) ? $card->last4 : null
+            'last_four'         => ($card) ? $card->last4 : null,
         ]);
 
         return $subscription;
