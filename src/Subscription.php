@@ -24,4 +24,9 @@ class Subscription extends Model
         $model = env('CHARGEBEE_MODEL') ?: config('chargebee.model', User::class);
         return $this->belongsTo($model, 'user_id');
     }
+
+    public function addons()
+    {
+        return $this->hasMany(Addon::class);
+    }
 }

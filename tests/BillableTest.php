@@ -37,11 +37,19 @@ class BillableTest extends PHPUnit_Framework_TestCase
             $table->increments('id');
             $table->string('subscription_id');
             $table->string('plan_id');
-            $table->string('user_id');
+            $table->string('user_id')->index()->unsigned();
             $table->integer('quantity')->default(1);
             $table->integer('last_four')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
+            $table->timestamps();
+        });
+
+        $this->schema()->create('addons', function($table) {
+            $table->increments('id');
+            $table->integer('subscription_id')->index()->unsigned();
+            $table->string('addon_id');
+            $table->integer('quantity')->default(0);
             $table->timestamps();
         });
     }
@@ -49,6 +57,8 @@ class BillableTest extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         $this->schema()->drop('users');
+        $this->schema()->drop('subscriptions');
+        $this->schema()->drop('addons');
     }
     
     /**
@@ -62,7 +72,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
             'last_name'     => 'Wierenga'
         ]);
 
-        $subscriber = $user->subscribe('test-plan');
+        $subscriber = $user->subscription('test-plan');
 
         $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscriber::class, $subscriber);
     }
@@ -80,7 +90,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException(TijmenWierenga\LaravelChargebee\Exceptions\MissingPlanException::class);
 
-        $user->subscribe()->create();
+        $user->subscription()->create();
     }
 
     /**
@@ -94,7 +104,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
             'last_name'     => 'Wierenga'
         ]);
 
-        $subscription = $user->subscribe('cbdemo_free')->create();
+        $subscription = $user->subscription('cbdemo_free')->create();
 
         // Test if subscription is created in database
         $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
@@ -119,7 +129,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         $cardToken = $this->getTestToken();
 
-        $subscription = $user->subscribe('cbdemo_free')->create($cardToken);
+        $subscription = $user->subscription('cbdemo_free')->create($cardToken);
 
         // Test if subscription is created in database
         $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
@@ -129,6 +139,48 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($user->subscriptions->first()->subscription_id);
         // Test if credit card number is null
         $this->assertNotNull($user->subscriptions->first()->last_four);
+    }
+
+    /**
+    * @test
+    */
+    public function it_registers_a_subscription_with_an_add_on()
+    {
+        $user = User::create([
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
+        ]);
+
+        $cardToken = $this->getTestToken();
+
+        $subscription = $user->subscription('cbdemo_free')
+            ->withAddOn('cbdemo_additionaluser')
+            ->create($cardToken);
+
+        // Test if add-on was successfully created.
+        $this->assertInstanceOf(\TijmenWierenga\LaravelChargebee\Addon::class, $subscription->addons->first());
+    }
+
+    /**
+    * @test
+    */
+    public function it_registers_a_subscription_with_a_coupon()
+    {
+        $user = User::create([
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
+        ]);
+
+        $cardToken = $this->getTestToken();
+
+        $subscription = $user->subscription('cbdemo_free')
+            ->coupon('cbdemo_earlybird')
+            ->create($cardToken);
+
+        // Test if subscription has a valid ID.
+        $this->assertNotNull($user->subscriptions->first()->subscription_id);
     }
 
     protected function getTestToken()

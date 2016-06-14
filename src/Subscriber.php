@@ -34,6 +34,13 @@ class Subscriber
     private $addOns = [];
 
     /**
+     * The Coupon ID registeren in Chargebee
+     *
+     * @var null
+     */
+    private $coupon = null;
+
+    /**
      * @param Model|null $model
      * @param null $plan
      */
@@ -61,6 +68,7 @@ class Subscriber
         $result = ChargeBee_Subscription::create($subscription);
         $subscription = $result->subscription();
         $card = $result->card();
+        $addons = $subscription->addons;
 
         $subscription = $this->model->subscriptions()->create([
             'subscription_id'   => $subscription->id,
@@ -70,6 +78,16 @@ class Subscriber
             'quantity'          => $subscription->planQuantity,
             'last_four'         => ($card) ? $card->last4 : null,
         ]);
+
+        if ($addons) {
+            foreach ($addons as $addon)
+            {
+                $subscription->addons()->create([
+                    'quantity' => $addon->quantity,
+                    'addon_id' => $addon->id,
+                ]);
+            }
+        }
 
         return $subscription;
     }
@@ -81,7 +99,7 @@ class Subscriber
      * @param $quantity
      * @return $this
      */
-    public function withAddOn($id, $quantity)
+    public function withAddOn($id, $quantity = 1)
     {
         $this->addOns([
             [
@@ -89,6 +107,19 @@ class Subscriber
                 'quantity' => $quantity
             ]
         ]);
+
+        return $this;
+    }
+
+    /**
+     * Redeem a coupon by adding the coupon ID from Chargebee
+     *
+     * @param $id
+     * @return $this
+     */
+    public function coupon($id)
+    {
+        $this->coupon = $id;
 
         return $this;
     }
@@ -126,7 +157,8 @@ class Subscriber
             'lastName'  => $this->model->last_name,
             'email'     => $this->model->email
         ];
-        $subscription['addOns'] = $this->buildAddOns();
+        $subscription['addons'] = $this->buildAddOns();
+        $subscription['coupon'] = $this->coupon;
 
         if ($cardToken)
         {
