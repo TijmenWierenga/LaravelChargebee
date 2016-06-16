@@ -143,6 +143,10 @@ class BillableTest extends PHPUnit_Framework_TestCase
         // Test if subscription can be swapped
         $subscription = $user->subscriptions->first()->swap('cbdemo_hustle');
         $this->assertEquals('cbdemo_hustle', $subscription->plan_id);
+
+        // Test if subscription can be cancelled
+        $subscription->cancel();
+        // TODO: Write assertions to determine whether cancelling succeeded.
     }
 
     /**

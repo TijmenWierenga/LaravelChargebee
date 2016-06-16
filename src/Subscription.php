@@ -50,4 +50,20 @@ class Subscription extends Model
 
         return $this;
     }
+
+    /**
+     * Cancel the subscription
+     *
+     * @return $this
+     */
+    public function cancel()
+    {
+        $subscriber = new Subscriber();
+        $subscriptionDetails = $subscriber->cancel($this);
+
+        $this->ends_at = $subscriptionDetails->currentTermEnd;
+        $this->save();
+
+        return $this;
+    }
 }

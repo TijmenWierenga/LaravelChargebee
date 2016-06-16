@@ -133,11 +133,20 @@ class Subscriber
      */
     public function swap(Subscription $subscription, $plan)
     {
-        $result = ChargeBee_Subscription::update($subscription->subscription_id, [
+        return ChargeBee_Subscription::update($subscription->subscription_id, [
             'plan_id' => $plan
-        ]);
+        ])->subscription();
+    }
 
-        return $result->subscription();
+    /**
+     * Cancel an existing subscription
+     *
+     * @param Subscription $subscription
+     * @return null
+     */
+    public function cancel(Subscription $subscription)
+    {
+        return ChargeBee_Subscription::cancel($subscription->subscription_id)->subscription();
     }
 
     /**
