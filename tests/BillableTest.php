@@ -139,6 +139,10 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($user->subscriptions->first()->subscription_id);
         // Test if credit card number is null
         $this->assertNotNull($user->subscriptions->first()->last_four);
+
+        // Test if subscription can be swapped
+        $subscription = $user->subscriptions->first()->swap('cbdemo_hustle');
+        $this->assertEquals('cbdemo_hustle', $subscription->plan_id);
     }
 
     /**

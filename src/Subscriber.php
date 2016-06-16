@@ -125,6 +125,22 @@ class Subscriber
     }
 
     /**
+     * Swap an existing subscription
+     *
+     * @param $subscription
+     * @param $plan
+     * @return null
+     */
+    public function swap(Subscription $subscription, $plan)
+    {
+        $result = ChargeBee_Subscription::update($subscription->subscription_id, [
+            'plan_id' => $plan
+        ]);
+
+        return $result->subscription();
+    }
+
+    /**
      * Adds add-ons to the subscription
      *
      * @param array $addOns

@@ -25,8 +25,29 @@ class Subscription extends Model
         return $this->belongsTo($model, 'user_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function addons()
     {
         return $this->hasMany(Addon::class);
+    }
+
+    /**
+     * Change the plan of a subscription
+     *
+     * @param $plan
+     * @return $this
+     */
+    public function swap($plan)
+    {
+        $subscriber = new Subscriber();
+        $subscriptionDetails = $subscriber->swap($this, $plan);
+
+        $this->plan_id = $subscriptionDetails->planId;
+        $this->ends_at = $subscriptionDetails->currentTermEnd;
+        $this->save();
+
+        return $this;
     }
 }
