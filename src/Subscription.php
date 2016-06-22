@@ -14,7 +14,7 @@ class Subscription extends Model
     /**
      * @var array
      */
-    protected $dates = ['ends_at', 'trial_ends_at'];
+    protected $dates = ['ends_at', 'trial_ends_at', 'next_billing_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

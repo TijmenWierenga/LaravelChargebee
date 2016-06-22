@@ -42,6 +42,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
             $table->integer('last_four')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
+            $table->timestamp('next_billing_at')->nullable();
             $table->timestamps();
         });
 
@@ -139,6 +140,8 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($user->subscriptions->first()->subscription_id);
         // Test if credit card number is null
         $this->assertNotNull($user->subscriptions->first()->last_four);
+        // Test if subscription has a next billing period
+        $this->assertInstanceOf(\Carbon\Carbon::class, $user->subscriptions->first()->next_billing_at);
 
         // Test if subscription can be swapped
         $subscription = $user->subscriptions->first()->swap('cbdemo_hustle');

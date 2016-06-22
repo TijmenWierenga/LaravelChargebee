@@ -73,7 +73,7 @@ class Subscriber
         $subscription = $this->model->subscriptions()->create([
             'subscription_id'   => $subscription->id,
             'plan_id'           => $subscription->planId,
-            'ends_at'           => $subscription->currentTermEnd,
+            'next_billing_at'   => $subscription->currentTermEnd,
             'trial_ends_at'     => $subscription->trialEnd,
             'quantity'          => $subscription->planQuantity,
             'last_four'         => ($card) ? $card->last4 : null,
