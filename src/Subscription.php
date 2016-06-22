@@ -3,6 +3,7 @@ namespace TijmenWierenga\LaravelChargebee;
 
 
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -44,8 +45,9 @@ class Subscription extends Model
         $subscriber = new Subscriber();
         $subscriptionDetails = $subscriber->swap($this, $plan);
 
-        $this->plan_id = $subscriptionDetails->planId;
-        $this->ends_at = $subscriptionDetails->currentTermEnd;
+        $this->plan_id          = $subscriptionDetails->planId;
+        $this->trial_ends_at    = $subscriptionDetails->trialEnd;
+        $this->ends_at          = $subscriptionDetails->currentTermEnd;
         $this->save();
 
         return $this;
@@ -65,5 +67,55 @@ class Subscription extends Model
         $this->save();
 
         return $this;
+    }
+
+    public function cancelled()
+    {
+        return (!! $this->ends_at);
+    }
+
+    /**
+     * Check if a subscription is active
+     *
+     * @return bool
+     */
+    public function active()
+    {
+        if (! $this->valid())
+        {
+            return $this->onTrial();
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if a subscription is within it's trial period
+     *
+     * @return bool
+     */
+    public function onTrial()
+    {
+        if (!! $this->trial_ends_at)
+        {
+            return Carbon::now()->lt($this->trial_ends_at);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the subscription is not expired
+     *
+     * @return bool
+     */
+    public function valid()
+    {
+        if (! $this->ends_at)
+        {
+            return true;
+        }
+
+        return Carbon::now()->lt($this->ends_at);
     }
 }

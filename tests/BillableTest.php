@@ -130,26 +130,34 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         $cardToken = $this->getTestToken();
 
-        $subscription = $user->subscription('cbdemo_free')->create($cardToken);
+        $subscription = $user->subscription('cbdemo_hustle')->create($cardToken);
 
         // Test if subscription is created in database
         $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
         // Test if user has a related subscription
         $this->assertCount(1, $user->subscriptions);
         // Test if subscription has an subscription identifier from Chargebee
-        $this->assertNotNull($user->subscriptions->first()->subscription_id);
+
+        $subscription = $user->subscriptions->first();
+
+        $this->assertNotNull($subscription->subscription_id);
         // Test if credit card number is null
-        $this->assertNotNull($user->subscriptions->first()->last_four);
-        // Test if subscription has a next billing period
-        $this->assertInstanceOf(\Carbon\Carbon::class, $user->subscriptions->first()->next_billing_at);
+        $this->assertNotNull($subscription->last_four);
+        // Test if subscription is on trial
+        $this->assertTrue($subscription->onTrial());
+        // Test if subscription is active
+        $this->assertTrue($subscription->active());
+        // Test if subscription is valid
+        $this->assertTrue($subscription->valid());
 
         // Test if subscription can be swapped
-        $subscription = $user->subscriptions->first()->swap('cbdemo_hustle');
-        $this->assertEquals('cbdemo_hustle', $subscription->plan_id);
+        $subscription = $subscription->swap('cbdemo_grow');
+        $this->assertEquals('cbdemo_grow', $subscription->plan_id);
 
         // Test if subscription can be cancelled
         $subscription->cancel();
-        // TODO: Write assertions to determine whether cancelling succeeded.
+        // Test if subscription is cancelled
+        $subscription->cancelled();
     }
 
     /**
@@ -171,6 +179,8 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         // Test if add-on was successfully created.
         $this->assertInstanceOf(\TijmenWierenga\LaravelChargebee\Addon::class, $subscription->addons->first());
+        // Test if a next billing period is defined
+        $this->assertInstanceOf(\Carbon\Carbon::class, $subscription->next_billing_at);
     }
 
     /**
