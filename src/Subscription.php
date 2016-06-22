@@ -47,7 +47,7 @@ class Subscription extends Model
 
         $this->plan_id          = $subscriptionDetails->planId;
         $this->trial_ends_at    = $subscriptionDetails->trialEnd;
-        $this->ends_at          = $subscriptionDetails->currentTermEnd;
+        $this->next_billing_at  = $subscriptionDetails->currentTermEnd;
         $this->save();
 
         return $this;
@@ -63,12 +63,34 @@ class Subscription extends Model
         $subscriber = new Subscriber();
         $subscriptionDetails = $subscriber->cancel($this);
 
-        $this->ends_at = $subscriptionDetails->currentTermEnd;
+        $this->ends_at = $subscriptionDetails->cancelledAt;
         $this->save();
 
         return $this;
     }
 
+    /**
+     * Reactivate a cancelled subscription
+     *
+     * @return $this
+     */
+    public function reactivate()
+    {
+        $subscriber = new Subscriber();
+        $subscriptionDetails = $subscriber->reactivate($this);
+
+        $this->ends_at = null;
+        $this->next_billing_at = $subscriptionDetails->currentTermEnd;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * Check if a subscription is cancelled
+     *
+     * @return bool
+     */
     public function cancelled()
     {
         return (!! $this->ends_at);

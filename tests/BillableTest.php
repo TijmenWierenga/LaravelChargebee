@@ -153,11 +153,18 @@ class BillableTest extends PHPUnit_Framework_TestCase
         // Test if subscription can be swapped
         $subscription = $subscription->swap('cbdemo_grow');
         $this->assertEquals('cbdemo_grow', $subscription->plan_id);
+        $this->assertTrue($subscription->valid());
+        $this->assertTrue($subscription->active());
+        $this->assertTrue($subscription->onTrial());
 
         // Test if subscription can be cancelled
         $subscription->cancel();
         // Test if subscription is cancelled
-        $subscription->cancelled();
+        $this->assertTrue($subscription->cancelled());
+
+        // Test if a subscription can be reactivated
+        $subscription->reactivate();
+        $this->assertFalse($subscription->cancelled());
     }
 
     /**

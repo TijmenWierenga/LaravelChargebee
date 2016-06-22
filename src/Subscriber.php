@@ -146,7 +146,20 @@ class Subscriber
      */
     public function cancel(Subscription $subscription)
     {
+        // TODO: Check if subscription is active or in trial
         return ChargeBee_Subscription::cancel($subscription->subscription_id)->subscription();
+    }
+
+    /**
+     * Reactivate a cancelled subscription
+     *
+     * @param Subscription $subscription
+     * @return null
+     */
+    public function reactivate(Subscription $subscription)
+    {
+        // TODO: Check if subscription is cancelled
+        return ChargeBee_Subscription::reactivate($subscription->subscription_id)->subscription();
     }
 
     /**
