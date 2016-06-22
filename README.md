@@ -77,6 +77,22 @@ $user->subscription($plan)
     ->create($creditcardToken)
 ```
 
+### Changing plans
+
+``` php
+// Get the subscription you want to change plans from
+$subscription = $user->subscriptions->first();
+
+// Change the current plan
+$subscription->swap($planId);
+```
+
+### Cancelling a subscription
+
+``` php
+$subscription->cancel();
+```
+
 
 ## Change log
 
