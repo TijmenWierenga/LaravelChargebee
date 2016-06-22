@@ -21,6 +21,7 @@ class CreateSubscriptionsTable extends Migration
             $table->integer('last_four')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
+            $table->timestamp('next_billing_at')->nullable();
             $table->timestamps();
         });
     }
