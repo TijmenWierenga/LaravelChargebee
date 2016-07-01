@@ -29,6 +29,8 @@ Next, register the service provider in `config/app.php`:
 ]
 ```
 
+If you want to use the package's routes for handling webhooks, make sure you place the service provider before the Route Service Prodiver (`App\Providers\RouteServiceProvider::class`).
+
 We also need database tables in order to store subscriptions and add-ons. Copy the migrations to your migrations folder by running the following command in your terminal:
 
 ``` shell
@@ -41,13 +43,19 @@ Then run the database migrations by entering the following command:
 php artisan migrate
 ```
 
+The `vendor:publish` command also publishes a **config** file (`config/chargebee.php`). If you want to use the webhook handler provided by this package, update the `publish_routes` config variable to `true`. 
+
 There are also a few environment variables that need to be added to the `.env`-file:
 
 ```
 CHARGEBEE_SITE=your-chargebee-site
 CHARGEBEE_KEY=your-chargebee-token
 CHARGEBEE_MODEL=App\User
-STRIPE_SECRET=your-stripe-secret-key
+```
+
+Also, define your payment gateway details in the `.env`-file:
+
+```
 CHARGEBEE_GATEWAY=stripe
 ```
 
@@ -99,6 +107,14 @@ $subscription->cancel();
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## Testing
+
+If you want to run the unit tests for this package you need acquire test tokens from Stripe. To be able to fetch a test token create an `.env`-file in the base directory and add your stripe secret token:
+
+```
+STRIPE_SECRET=your-stripe-secret-key
+```
+
+To run the PHPUnit tests, run the following composer command from the base directory:
 
 ``` bash
 $ composer run test
