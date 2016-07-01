@@ -22,6 +22,10 @@ class ChargebeeServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/Migrations/' => database_path('migrations'),
         ], 'migrations');
+
+        if (! $this->app->routesAreCached() && config('chargebee.publish_routes', false)) {
+            require __DIR__.'/routes.php';
+        }
     }
 
     /**
