@@ -37,7 +37,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
             $table->increments('id');
             $table->string('subscription_id');
             $table->string('plan_id');
-            $table->string('user_id')->index()->unsigned();
+            $table->integer('user_id')->index()->unsigned();
             $table->integer('quantity')->default(1);
             $table->integer('last_four')->nullable();
             $table->timestamp('ends_at')->nullable();
