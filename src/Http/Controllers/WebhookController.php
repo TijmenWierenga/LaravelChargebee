@@ -26,7 +26,7 @@ class WebhookController extends Controller
         $subscription = (new Subscription)->where('subscription_id', $payload->subscription->id)->first();
 
         if ($subscription) {
-            // TODO: Mark subscription as cancelled instantly.
+            $subscription->markAsCancelled();
         }
 
         return response("Webhook handled successfully.", 200);
