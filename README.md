@@ -3,8 +3,6 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
 [![Build Status](https://travis-ci.org/TijmenWierenga/LaravelChargebee.svg?branch=master)](https://travis-ci.org/TijmenWierenga/LaravelChargebee)
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
 A Laravel package which provides an easy way to handle billing and subscriptions.
@@ -145,8 +143,6 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [link-packagist]: https://packagist.org/packages/tijmen-wierenga/laravel-chargebee
 [link-travis]: https://travis-ci.org/TijmenWierenga/LaravelChargebee
-[link-scrutinizer]: https://scrutinizer-ci.com/g/tijmen-wierenga/laravel-chargebee/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/tijmen-wierenga/laravel-chargebee
 [link-downloads]: https://packagist.org/packages/tijmen-wierenga/laravel-chargebee
 [link-author]: https://github.com/TijmenWierenga
 [link-contributors]: ../../contributors
