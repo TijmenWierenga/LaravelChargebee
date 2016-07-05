@@ -144,10 +144,23 @@ class Subscriber
      * @param Subscription $subscription
      * @return null
      */
-    public function cancel(Subscription $subscription)
+    public function cancel(Subscription $subscription, $cancelImmediately = false)
     {
         // TODO: Check if subscription is active or in trial
-        return ChargeBee_Subscription::cancel($subscription->subscription_id)->subscription();
+        return ChargeBee_Subscription::cancel($subscription->subscription_id, [
+            'end_of_term' => ! $cancelImmediately
+        ])->subscription();
+    }
+
+    /**
+     * Resume a subscription that has a scheduled cancellation
+     *
+     * @param Subscription $subscription
+     * @return null
+     */
+    public function resume(Subscription $subscription)
+    {
+        return ChargeBee_Subscription::removeScheduledCancellation($subscription->subscription_id)->subscription();
     }
 
     /**

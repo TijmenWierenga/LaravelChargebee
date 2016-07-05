@@ -161,10 +161,19 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $subscription->cancel();
         // Test if subscription is cancelled
         $this->assertTrue($subscription->cancelled());
+        // TODO: Check if subscription ends after trial period
+        $this->assertTrue($subscription->ends_at->eq($subscription->trial_ends_at));
 
         // Test if a subscription can be reactivated
-        $subscription->reactivate();
+        $subscription->resume();
         $this->assertFalse($subscription->cancelled());
+        $this->assertTrue($subscription->active());
+        $this->assertTrue($subscription->onTrial());
+
+        $subscription->cancelImmediately();
+        $this->assertTrue(\Carbon\Carbon::now()->gte($subscription->ends_at));
+        $this->assertFalse($subscription->active());
+        $this->assertFalse($subscription->onTrial());
     }
 
     /**

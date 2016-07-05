@@ -72,6 +72,41 @@ class Subscription extends Model
     }
 
     /**
+     * Cancel a subscription immediately
+     *
+     * @return $this
+     */
+    public function cancelImmediately()
+    {
+        $subscriber = new Subscriber();
+        $subscriptionDetails = $subscriber->cancel($this, true);
+
+        $this->ends_at = $subscriptionDetails->cancelledAt;
+        $this->trial_ends_at = $subscriptionDetails->cancelledAt;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * Resume a subscription that has a scheduled cancellation.
+     *
+     * @return $this
+     */
+    public function resume()
+    {
+        $subscriber = new Subscriber();
+        $subscriptionDetails = $subscriber->resume($this);
+
+        $this->ends_at = null;
+        $this->next_billing_at = $subscriptionDetails->currentTermEnd;
+        $this->trial_ends_at = $subscriptionDetails->trialEnd;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
      * Reactivate a cancelled subscription
      *
      * @return $this
