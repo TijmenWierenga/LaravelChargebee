@@ -1,8 +1,11 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Stripe\Token;
+use TijmenWierenga\LaravelChargebee\Billable;
+use TijmenWierenga\LaravelChargebee\HandlesWebhooks;
 
 class BillableTest extends PHPUnit_Framework_TestCase
 {
@@ -171,7 +174,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($subscription->onTrial());
 
         $subscription->cancelImmediately();
-        $this->assertTrue(\Carbon\Carbon::now()->gte($subscription->ends_at));
+        $this->assertTrue(Carbon::now()->gte($subscription->ends_at));
         $this->assertFalse($subscription->active());
         $this->assertFalse($subscription->onTrial());
     }
@@ -196,7 +199,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
         // Test if add-on was successfully created.
         $this->assertInstanceOf(\TijmenWierenga\LaravelChargebee\Addon::class, $subscription->addons->first());
         // Test if a next billing period is defined
-        $this->assertInstanceOf(\Carbon\Carbon::class, $subscription->next_billing_at);
+        $this->assertInstanceOf(Carbon::class, $subscription->next_billing_at);
     }
 
     /**
@@ -218,6 +221,30 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         // Test if subscription has a valid ID.
         $this->assertNotNull($user->subscriptions->first()->subscription_id);
+    }
+
+    /**
+     * @test
+     */
+    public function it_handles_a_timestamp_as_a_valid_date_when_updating_cancellation_date()
+    {
+        $user = User::create([
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
+        ]);
+
+        $cardToken = $this->getTestToken();
+
+        $subscription = $user->subscription('cbdemo_free')
+            ->coupon('cbdemo_earlybird')
+            ->create($cardToken);
+
+        $timestamp = 1467274940;
+        // Set the cancelation date when subscription is cancelled through webhook.
+        $subscription->updateCancellationDate($timestamp);
+        // Assert the subscription's end date is equel to the cancellation timestamp.
+        $this->assertEquals(Carbon::createFromTimestamp($timestamp), $subscription->ends_at);
     }
 
     protected function getTestToken()
@@ -246,5 +273,5 @@ class BillableTest extends PHPUnit_Framework_TestCase
 }
 
 class User extends Eloquent {
-    use \TijmenWierenga\LaravelChargebee\Billable;
+    use Billable, HandlesWebhooks;
 }

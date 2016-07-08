@@ -20,9 +20,9 @@ trait HandlesWebhooks
      *
      * @return $this
      */
-    public function markAsCancelled()
+    public function updateCancellationDate($date = null)
     {
-        $this->ends_at = Carbon::now();
+        $this->ends_at = ($date) ?: Carbon::now();
         $this->save();
 
         return $this;
