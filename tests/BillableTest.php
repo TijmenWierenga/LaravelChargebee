@@ -200,6 +200,8 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(\TijmenWierenga\LaravelChargebee\Addon::class, $subscription->addons->first());
         // Test if a next billing period is defined
         $this->assertInstanceOf(Carbon::class, $subscription->next_billing_at);
+
+        dump($subscription);
     }
 
     /**
