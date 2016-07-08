@@ -22,6 +22,7 @@
     "require": {
         "illuminate/support": "~5.1",
         "illuminate/database": "~5.1",
+        "illuminate/console": "~5.1",
         "php" : "~5.5|~7.0",
         "chargebee/chargebee-php": "^1.6",
         "stripe/stripe-php": "^3.14"

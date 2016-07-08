@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSubscriptionsTable extends Migration
 {
@@ -12,7 +13,7 @@ class CreateSubscriptionsTable extends Migration
      */
     public function up()
     {
-        $this->schema()->create('subscriptions', function($table) {
+        Schema::create('subscriptions', function($table) {
             $table->increments('id');
             $table->string('subscription_id');
             $table->string('plan_id');

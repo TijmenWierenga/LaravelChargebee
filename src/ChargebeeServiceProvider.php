@@ -3,6 +3,7 @@
 namespace TijmenWierenga\LaravelChargebee;
 
 use Illuminate\Support\ServiceProvider;
+use TijmenWierenga\LaravelChargebee\Commands\Install;
 
 class ChargebeeServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,8 @@ class ChargebeeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->commands([
+            Install::class
+        ]);
     }
 }
