@@ -200,8 +200,6 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(\TijmenWierenga\LaravelChargebee\Addon::class, $subscription->addons->first());
         // Test if a next billing period is defined
         $this->assertInstanceOf(Carbon::class, $subscription->next_billing_at);
-
-        dump($subscription);
     }
 
     /**
@@ -247,6 +245,23 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $subscription->updateCancellationDate($timestamp);
         // Assert the subscription's end date is equel to the cancellation timestamp.
         $this->assertEquals(Carbon::createFromTimestamp($timestamp), $subscription->ends_at);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_a_hosted_payment_page_url()
+    {
+        $user = User::create([
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
+        ]);
+
+        $url = $user->subscription('cbdemo_hustle')->withAddOn('cbdemo_additionaluser')->getCheckoutUrl();
+
+        // Check if a valid url is returned
+        $this->assertRegExp('/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/', $url);
     }
 
     protected function getTestToken()

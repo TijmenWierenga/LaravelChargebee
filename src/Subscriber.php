@@ -2,6 +2,7 @@
 namespace TijmenWierenga\LaravelChargebee;
 
 use ChargeBee_Environment;
+use ChargeBee_HostedPage;
 use ChargeBee_Subscription;
 use Illuminate\Database\Eloquent\Model;
 use TijmenWierenga\LaravelChargebee\Exceptions\MissingPlanException;
@@ -90,6 +91,27 @@ class Subscriber
         }
 
         return $subscription;
+    }
+
+    /**
+     * @return mixed
+     * @throws MissingPlanException
+     */
+    public function getCheckoutUrl($embed = false)
+    {
+        if (! $this->plan) throw new MissingPlanException('No plan was set to assign to the customer.');
+
+        return ChargeBee_HostedPage::checkoutNew([
+            'subscription' => [
+                'planId' => $this->plan
+            ],
+            'addons' => [
+                $this->addOns
+            ],
+            'embed' => $embed,
+            'redirectUrl' => config('chargebee.redirect.success'),
+            'cancelledUrl' => config('chargebee.redirect.cancelled'),
+        ])->hostedPage()->url;
     }
 
     /**
@@ -196,10 +218,10 @@ class Subscriber
     }
 
     /**
-     * @param $cardToken
+     * @param null $cardToken
      * @return array
      */
-    public function buildSubscription($cardToken)
+    public function buildSubscription($cardToken = null)
     {
         $subscription = [];
         $subscription['planId'] = $this->plan;
