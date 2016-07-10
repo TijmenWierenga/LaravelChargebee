@@ -6,7 +6,7 @@ return [
 
     'redirect' => [
         'success' => url('payment/success'),
-        'cancelled' => route('payment/cancelled'),
+        'cancelled' => url('payment/cancelled'),
     ],
     // Change this value to true if you want the Service Provider to create a route for handling Chargebee Webhooks
     'publish_routes' => false

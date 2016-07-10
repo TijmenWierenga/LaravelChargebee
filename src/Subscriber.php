@@ -13,6 +13,14 @@ use TijmenWierenga\LaravelChargebee\Exceptions\MissingPlanException;
  */
 class Subscriber
 {
+
+    /**
+     * Configuration settings.
+     *
+     * @var array
+     */
+    protected $config;
+
     /**
      * The model who's subscription is created, retrieved, updated or removed.
      *
@@ -45,7 +53,7 @@ class Subscriber
      * @param Model|null $model
      * @param null $plan
      */
-    public function __construct(Model $model = null, $plan = null)
+    public function __construct(Model $model = null, $plan = null, array $config = null)
     {
         // Set up Chargebee environment keys
         ChargeBee_Environment::configure(getenv('CHARGEBEE_SITE'), getenv('CHARGEBEE_KEY'));
@@ -53,6 +61,9 @@ class Subscriber
         // You can set a plan on the constructor, but it's not required
         $this->plan = $plan;
         $this->model = $model;
+
+        // Set config settings.
+        $this->config = ($config) ?: $this->getDefaultConfig();
     }
 
     /**
@@ -109,8 +120,8 @@ class Subscriber
                 $this->addOns
             ],
             'embed' => $embed,
-            'redirectUrl' => config('chargebee.redirect.success'),
-            'cancelledUrl' => config('chargebee.redirect.cancelled'),
+            'redirectUrl' => $this->config['redirect']['success'],
+            'cancelledUrl' => $this->config['redirect']['cancelled'],
         ])->hostedPage()->url;
     }
 
@@ -250,5 +261,15 @@ class Subscriber
         if (empty($this->addOns)) return null;
 
         return $this->addOns;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    private function getDefaultConfig()
+    {
+        if (getenv('APP_ENV') === 'testing') return null;
+
+        return config('chargebee');
     }
 }

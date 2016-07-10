@@ -1,18 +1,24 @@
 <?php
 
+
 use Carbon\Carbon;
+use Dotenv\Dotenv;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Stripe\Token;
+use TijmenWierenga\LaravelChargebee\Addon;
 use TijmenWierenga\LaravelChargebee\Billable;
+use TijmenWierenga\LaravelChargebee\Exceptions\MissingPlanException;
 use TijmenWierenga\LaravelChargebee\HandlesWebhooks;
+use TijmenWierenga\LaravelChargebee\Subscriber;
+use TijmenWierenga\LaravelChargebee\Subscription;
 
 class BillableTest extends PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
         if (file_exists(__DIR__.'/../.env')) {
-            $dotenv = new Dotenv\Dotenv(__DIR__.'/../');
+            $dotenv = new Dotenv(__DIR__.'/../');
             $dotenv->load();
         }
     }
@@ -78,7 +84,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         $subscriber = $user->subscription('test-plan');
 
-        $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscriber::class, $subscriber);
+        $this->assertInstanceOf(Subscriber::class, $subscriber);
     }
 
     /**
@@ -92,7 +98,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
             'last_name'     => 'Wierenga'
         ]);
 
-        $this->setExpectedException(TijmenWierenga\LaravelChargebee\Exceptions\MissingPlanException::class);
+        $this->setExpectedException(MissingPlanException::class);
 
         $user->subscription()->create();
     }
@@ -111,7 +117,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $subscription = $user->subscription('cbdemo_free')->create();
 
         // Test if subscription is created in database
-        $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
+        $this->assertInstanceOf(Subscription::class, $subscription);
         // Test if user has a related subscription
         $this->assertCount(1, $user->subscriptions);
         // Test if subscription has an subscription identifier from Chargebee
@@ -136,7 +142,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $subscription = $user->subscription('cbdemo_hustle')->create($cardToken);
 
         // Test if subscription is created in database
-        $this->assertInstanceOf(TijmenWierenga\LaravelChargebee\Subscription::class, $subscription);
+        $this->assertInstanceOf(Subscription::class, $subscription);
         // Test if user has a related subscription
         $this->assertCount(1, $user->subscriptions);
         // Test if subscription has an subscription identifier from Chargebee
@@ -197,7 +203,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
             ->create($cardToken);
 
         // Test if add-on was successfully created.
-        $this->assertInstanceOf(\TijmenWierenga\LaravelChargebee\Addon::class, $subscription->addons->first());
+        $this->assertInstanceOf(Addon::class, $subscription->addons->first());
         // Test if a next billing period is defined
         $this->assertInstanceOf(Carbon::class, $subscription->next_billing_at);
     }
@@ -290,5 +296,19 @@ class BillableTest extends PHPUnit_Framework_TestCase
 }
 
 class User extends Eloquent {
+
     use Billable, HandlesWebhooks;
+
+    public function subscription($plan = null)
+    {
+        return new Subscriber($this, $plan, [
+            'model' => App\User::class,
+
+            'redirect' => [
+                'success' => null,
+                'cancelled' => null,
+            ],
+            'publish_routes' => false
+        ]);
+    }
 }
