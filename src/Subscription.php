@@ -14,6 +14,8 @@ class Subscription extends Model
 {
     use HandlesWebhooks;
 
+    protected $fillable = ['subscription_id', 'plan_id', 'user_id', 'quantity', 'last_four', 'trial_ends_at', 'ends_at', 'next_billing_at'];
+
     /**
      * @var array
      */
