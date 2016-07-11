@@ -170,7 +170,7 @@ class BillableTest extends PHPUnit_Framework_TestCase
         $subscription->cancel();
         // Test if subscription is cancelled
         $this->assertTrue($subscription->cancelled());
-        // TODO: Check if subscription ends after trial period
+        // Test if subscription ends after trial period
         $this->assertTrue($subscription->ends_at->eq($subscription->trial_ends_at));
 
         // Test if a subscription can be reactivated
@@ -268,6 +268,20 @@ class BillableTest extends PHPUnit_Framework_TestCase
 
         // Check if a valid url is returned
         $this->assertRegExp('/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/', $url);
+    }
+
+    /**
+    * @test
+    */
+    public function it_registers_a_subscription_after_a_callback()
+    {
+        $user = User::create([
+            'email'         => 'tijmen@floown.com',
+            'first_name'    => 'Tijmen',
+            'last_name'     => 'Wierenga'
+        ]);
+
+        // TODO: Write test
     }
 
     protected function getTestToken()

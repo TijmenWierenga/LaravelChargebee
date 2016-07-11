@@ -6,6 +6,7 @@ use ChargeBee_HostedPage;
 use ChargeBee_Subscription;
 use Illuminate\Database\Eloquent\Model;
 use TijmenWierenga\LaravelChargebee\Exceptions\MissingPlanException;
+use TijmenWierenga\LaravelChargebee\Exceptions\UserMismatchException;
 
 /**
  * Class Subscriber
@@ -122,7 +123,51 @@ class Subscriber
             'embed' => $embed,
             'redirectUrl' => $this->config['redirect']['success'],
             'cancelledUrl' => $this->config['redirect']['cancelled'],
+            'passThruContent' => base64_encode($this->model->id)
         ])->hostedPage()->url;
+    }
+
+    /**
+     * Retrieve a hosted page and register a user based on the result of the payment.
+     *
+     * @param $id
+     * @return null
+     * @throws UserMismatchException
+     */
+    public function registerFromHostedPage($id)
+    {
+        $result = ChargeBee_HostedPage::retrieve($id);
+
+        // TODO: Check if subscription was successful or failed.
+        // Check if the ID of the model is the same as the ID of the model that performed the payment
+        if (! (int) base64_decode($result->hostedPage()->passThruContent) === $this->model->id) throw new UserMismatchException('The user who performed the payment is not the user you are trying to attach the subscription to');
+
+        $subscriptionId = $result->hostedPage()->content['subscription']['id'];
+        $result = ChargeBee_Subscription::retrieve($subscriptionId);
+        $subscription = $result->subscription();
+        $addons = $subscription->addons;
+        $card = $result->card();
+
+        $subscription = $this->model->subscriptions()->create([
+            'subscription_id'   => $subscription->id,
+            'plan_id'           => $subscription->planId,
+            'next_billing_at'   => $subscription->currentTermEnd,
+            'trial_ends_at'     => $subscription->trialEnd,
+            'quantity'          => $subscription->planQuantity,
+            'last_four'         => $card->last4,
+        ]);
+
+        if ($addons) {
+            foreach ($addons as $addon)
+            {
+                $subscription->addons()->create([
+                    'quantity' => $addon->quantity,
+                    'addon_id' => $addon->id,
+                ]);
+            }
+        }
+
+        return $subscription;
     }
 
     /**
