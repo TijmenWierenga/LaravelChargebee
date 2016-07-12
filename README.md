@@ -29,29 +29,22 @@ Next, register the service provider in `config/app.php`:
 
 If you want to use the package's routes for handling webhooks, make sure you place the service provider before the Route Service Prodiver (`App\Providers\RouteServiceProvider::class`).
 
-We also need database tables in order to store subscriptions and add-ons. Copy the migrations to your migrations folder by running the following command in your terminal:
+Next, run the following command in your terminal:
 
-``` shell
-php artisan vendor:publish
+``` bash
+php artisan chargebee:install
 ```
 
-Then run the database migrations by entering the following command:
-
-``` shell
-php artisan migrate
-```
-
-The `vendor:publish` command also publishes a **config** file (`config/chargebee.php`). If you want to use the webhook handler provided by this package, update the `publish_routes` config variable to `true`. 
+This will copy and run the migrations necessary for the package to work. It also copies the configuration file to your config path.
 
 There are also a few environment variables that need to be added to the `.env`-file:
 
 ```
 CHARGEBEE_SITE=your-chargebee-site
 CHARGEBEE_KEY=your-chargebee-token
-CHARGEBEE_MODEL=App\User
 ```
 
-Also, define your payment gateway details in the `.env`-file:
+If you want to use a different payment gateway, define your payment gateway details in the `.env`-file:
 
 ```
 CHARGEBEE_GATEWAY=stripe
@@ -61,7 +54,61 @@ CHARGEBEE_GATEWAY=stripe
 
 ### Creating a new subscription:
 
-Create a new subscription by providing the plan ID to the subscription method and by adding the credit card token to the create method:
+You can create subscriptions in multiple ways:
+* Through Chargebee's Hosted Page
+* Through Stripe/Braintree's Javascript library
+
+#### Create a subscription with Chargebee's Hosted Page
+
+Retrieve a hosted page URL:
+
+``` php
+$url = $user->subscription($planId)->withAddon($addonId)->getCheckoutUrl($embed);
+```
+
+The `$embed` variable is a boolean value which describes whether or not you want to embed the hosted page as an i-frame.
+
+You can now choose between redirecting the user to the hosted page, or send it to a view where you can render it:
+
+**Redirect**
+``` php
+return redirect($url);
+```
+
+**Return it as a variable in your view**
+``` php
+return view('subscribe')->with(compact($url));
+```
+
+Next, render it in your view:
+``` html
+<iframe src="{{ $url }}"></iframe>
+```
+
+On success, Chargebee will redirect to their own success page by default, but to register the subscription in our own application, we need to redirect back to our application. To define this redirect, setup a callback route:
+
+```php
+    // Define your callback URI's here
+    'redirect' => [
+        'success' => 'http://chargebee.app/success',
+        'cancelled' => null,
+    ],
+```
+
+Add the route and make a call to the `registerFromHostedPage` method from the controller:
+``` php
+$user->subscription()->registerFromHostedPage($request->id);
+```
+
+The subscription is now registered in both Chargebee and your own application. I coulnd't be easier!
+
+#### Subscriptions with Stripe/Braintree
+
+In order to create subscriptions with Stripe and Braintree, you need to make use of their Javascript libraries. More info on subscribing with Stripe and Braintree can be found below:
+* [Stripe](https://www.chargebee.com/docs/stripe.html)
+* [Braintree](https://www.chargebee.com/docs/braintree.html)
+
+To create a subscription with Braintree or Stripe you'll have to add a credit card token:
 
 ``` php
 $user->subscription($plan)->create($creditcardToken);
@@ -99,17 +146,15 @@ $subscription->swap($planId);
 $subscription->cancel();
 ```
 
-
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
 ## Testing
 
 If you want to run the unit tests for this package you need acquire test tokens from Stripe. To be able to fetch a test token create an `.env`-file in the base directory and add your stripe secret token:
 
 ```
 STRIPE_SECRET=your-stripe-secret-key
+CHARGEBEE_SITE=your-chargebee-site
+CHARGEBEE_KEY=your-chargebee-token
+CHARGEBEE_GATEWAY=stripe
 ```
 
 To run the PHPUnit tests, run the following composer command from the base directory:
@@ -117,10 +162,6 @@ To run the PHPUnit tests, run the following composer command from the base direc
 ``` bash
 $ composer run test
 ```
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
 ## Security
 
