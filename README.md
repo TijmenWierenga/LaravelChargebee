@@ -7,10 +7,6 @@
 
 A Laravel package which provides an easy way to handle billing and subscriptions.
 
-### WARNING
-
-This package is still under heavy construction. Until further notice, this package will be highly unstable.
-
 ## Install
 
 Via Composer
