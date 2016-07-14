@@ -111,7 +111,6 @@ use App\User;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
