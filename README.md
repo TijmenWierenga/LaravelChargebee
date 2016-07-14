@@ -111,12 +111,13 @@ use App\User;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
     public function create()
     {
-        // Authenticate a user or create one.
+        // Authenticate a user or create one. Note that this is a dummy login. Not to be used in production.
         $user = User::first();
         Auth::login($user);
 
@@ -127,7 +128,7 @@ class SubscriptionController extends Controller
 
     public function handleCallback(Request $request)
     {
-        // Get the authenticated user.
+        // Get the authenticated user. Again, this is dummy code just for demonstration.
         $user = User::first();
         
         // Attach the subscription to the user from the hosted page identifier.
