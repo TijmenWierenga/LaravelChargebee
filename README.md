@@ -98,6 +98,49 @@ $user->subscription()->registerFromHostedPage($request->id);
 
 The subscription is now registered in both Chargebee and your own application. I coulnd't be easier!
 
+#### Example
+
+##### Subscription Controller
+
+``` php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\User;
+
+use App\Http\Requests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class SubscriptionController extends Controller
+{
+    public function create()
+    {
+        // Authenticate a user or create one.
+        $user = User::first();
+        Auth::login($user);
+
+        // Create the embedded checkout form and return it to the view.
+        $url = $user->subscription('cbdemo_hustle')->withAddon('cbdemo_conciergesupport')->getCheckoutUrl(true);
+        return view('subscribe')->with(compact(['url', 'user']));
+    }
+
+    public function handleCallback(Request $request)
+    {
+        // Get the authenticated user.
+        $user = User::first();
+        
+        // Attach the subscription to the user from the hosted page identifier.
+        $user->subscription()->registerFromHostedPage($request->id);
+
+        // Return the user to a success page.
+        return view('subscribe')->with(compact(['user']));
+    }
+}
+```
+
+
 #### Subscriptions with Stripe/Braintree
 
 In order to create subscriptions with Stripe and Braintree, you need to make use of their Javascript libraries. More info on subscribing with Stripe and Braintree can be found below:
