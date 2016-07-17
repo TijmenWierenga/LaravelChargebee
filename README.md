@@ -20,7 +20,7 @@ LaravelChargebee (LC) is a membership management tool which handles your billing
 
 If you haven't got an account on Chargebee, create one [here](https://www.chargebee.com/trial-signup.html).
 
-Then require the project into your project via Composer:
+Then require the package into your project via Composer:
 
 ``` bash
 $ composer require tijmen-wierenga/laravel-chargebee
