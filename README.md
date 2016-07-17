@@ -7,6 +7,15 @@
 
 A Laravel package which provides an easy way to handle billing and subscriptions.
 
+## Introduction
+
+LaravelChargebee (LC) is a membership management tool which handles your billing and recurring subscriptions with minimal effort. This easy-to-install package will cover the most important features for a successful subscription system:
+* Create recurring subscriptions in a very flexible way:
+    * Add add-ons, coupons or even one-time charges
+* Change existing subscriptions
+* Cancel subscriptions
+* All of this through a fluent API or by using Chargebee's secure hosted pages.
+
 ## Install
 
 Via Composer
