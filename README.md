@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/TijmenWierenga/LaravelChargebee.svg?branch=master)](https://travis-ci.org/TijmenWierenga/LaravelChargebee)
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A Laravel package which provides an easy way to handle billing and subscriptions.
+A Laravel package which provides an easy way to handle billing and subscriptions by making use of [Chargebee](https://www.chargebee.com)'s subscription software.
 
 ## Introduction
 
@@ -18,7 +18,9 @@ LaravelChargebee (LC) is a membership management tool which handles your billing
 
 ## Install
 
-Via Composer
+If you haven't got an account on Chargebee, create one [here](https://www.chargebee.com/trial-signup.html).
+
+Then require the project into your project via Composer:
 
 ``` bash
 $ composer require tijmen-wierenga/laravel-chargebee
@@ -60,8 +62,8 @@ CHARGEBEE_GATEWAY=stripe
 ### Creating a new subscription:
 
 You can create subscriptions in multiple ways:
-* Through Chargebee's Hosted Page
-* Through Stripe/Braintree's Javascript library
+* Through [Chargebee's Hosted Page](https://www.chargebee.com/docs/hp_overview.html)
+* Through [Stripe](https://www.chargebee.com/docs/stripe.html)/[Braintree](https://www.chargebee.com/docs/braintree.html)'s Javascript library
 
 #### Create a subscription with Chargebee's Hosted Page
 
