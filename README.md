@@ -90,6 +90,10 @@ Next, render it in your view:
 <iframe src="{{ $url }}"></iframe>
 ```
 
+You can fully customize your hosted page on Chargebee, an example is shown below:
+
+![Chargebee's Hosted Page example](https://s32.postimg.org/4bk00xmfp/Screen_Shot_2016_07_17_at_12_37_34.png)
+
 On success, Chargebee will redirect to their own success page by default, but to register the subscription in our own application, we need to redirect back to our application. To define this redirect, setup a callback route:
 
 ```php
