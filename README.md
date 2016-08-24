@@ -34,6 +34,19 @@ Next, register the service provider in `config/app.php`:
 ]
 ```
 
+Add the LaravelChargebee traits to your [model](https://laravel.com/docs/master/eloquent#defining-models):
+
+``` php
+use TijmenWierenga\LaravelChargebee\Billable;
+use TijmenWierenga\LaravelChargebee\HandlesWebhooks;
+
+class User extends Eloquent {
+    
+    use Billable, HandlesWebhooks;
+
+}
+```
+
 If you want to use the package's routes for handling webhooks, make sure you place the service provider before the Route Service Prodiver (`App\Providers\RouteServiceProvider::class`).
 
 Next, run the following command in your terminal:
